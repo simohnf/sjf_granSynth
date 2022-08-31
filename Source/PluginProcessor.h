@@ -9,7 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "/Users/simonfay/Programming_Stuff/sjf_audio/sjf_granular.h"
+#include "/Users/simonfay/JUCE_PROJECTS/sjf_audio/sjf_granular.h"
 #include <vector>
 //==============================================================================
 /**

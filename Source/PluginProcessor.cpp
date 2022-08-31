@@ -94,7 +94,7 @@ void Sjf_granSynthAudioProcessor::changeProgramName (int index, const juce::Stri
 //==============================================================================
 void Sjf_granSynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    m_grainEngine.initialise(getSampleRate());
+    m_grainEngine.initialiseGranSynth( sampleRate, samplesPerBlock );
 }
 
 void Sjf_granSynthAudioProcessor::releaseResources()

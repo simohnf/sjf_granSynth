@@ -13,6 +13,7 @@
 Sjf_granSynthAudioProcessorEditor::Sjf_granSynthAudioProcessorEditor (Sjf_granSynthAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
+    setLookAndFeel( &otherLookandFeel );
     
     addAndMakeVisible(&envTypeBox);
     envTypeBox.addItem("hann", 1);
@@ -33,47 +34,25 @@ Sjf_granSynthAudioProcessorEditor::Sjf_granSynthAudioProcessorEditor (Sjf_granSy
     triggerRandomCloudButton.setButtonText("random cloud");
     triggerRandomCloudButton.onClick = [this]
     {
-        grainPositionGraph.randomGraph();
-        grainPanGraph.randomGraph();
-        grainTransposeGraph.randomGraph();
-        grainSizeGraph.randomGraph();
-        grainGainGraph.randomGraph();
-        grainDeltaGraph.randomGraph();
-        audioProcessor.m_grainEngine.setCloudLength(500.0f + rand01()*29500.0f);
+        randomiseGraphs();
+        
+        auto newCloudLength = 500.0f + rand01()*29500.0f;
+        audioProcessor.m_grainEngine.setCloudLength( newCloudLength );
+        cloudLengthNumBox.setValue( newCloudLength, juce::dontSendNotification );
+        
         auto envType = 1 + (int)( rand01() * envTypeBox.getNumItems() );
         audioProcessor.m_grainEngine.setEnvType( envType );
-        envTypeBox.setSelectedId( envType );
+        envTypeBox.setSelectedId( envType, juce::dontSendNotification );
         
-        audioProcessor.m_grainEngine.setGrainPositionVector( grainPositionGraph.getGraphAsVector() );
-        audioProcessor.m_grainEngine.setGrainPanVector( grainPanGraph.getGraphAsVector() );
-        audioProcessor.m_grainEngine.setGrainTranspositionVector( grainTransposeGraph.getGraphAsVector() );
-        audioProcessor.m_grainEngine.setGrainSizeVector( grainSizeGraph.getGraphAsVector() );
-        audioProcessor.m_grainEngine.setGrainGainVector( grainGainGraph.getGraphAsVector() );
-        audioProcessor.m_grainEngine.setGrainDeltaVector( grainDeltaGraph.getGraphAsVector() );
+        getGraphsAsVectors();
         audioProcessor.m_grainEngine.triggerNewCloud(true);
     };
-//    triggerRandomCloudButton.onClick = [this]{ audioProcessor.m_grainEngine.newGrain(grainStartSlider.getValue(), grainLengthSlider.getValue(), grainTranspositionSlider.getValue(), 1.0f, grainPanSlider.getValue(), 0); };
-//    audioProcessor.m_grainEngine.newGrain(float grainStart, float grainLengthMS, float transposition, float gain, float pan, int envType)
-    
-    
     
     addAndMakeVisible(&triggerCloudButton);
     triggerCloudButton.setButtonText("trigger cloud");
     triggerCloudButton.onClick = [this]
     {
-//        grainPositionGraph.randomGraph();
-//        grainPanGraph.randomGraph();
-//        grainTransposeGraph.randomGraph();
-//        grainSizeGraph.randomGraph();
-//        grainGainGraph.randomGraph();
-//        grainDeltaGraph.randomGraph();
-        
-        audioProcessor.m_grainEngine.setGrainPositionVector( grainPositionGraph.getGraphAsVector() );
-        audioProcessor.m_grainEngine.setGrainPanVector( grainPanGraph.getGraphAsVector() );
-        audioProcessor.m_grainEngine.setGrainTranspositionVector( grainTransposeGraph.getGraphAsVector() );
-        audioProcessor.m_grainEngine.setGrainSizeVector( grainSizeGraph.getGraphAsVector() );
-        audioProcessor.m_grainEngine.setGrainGainVector( grainGainGraph.getGraphAsVector() );
-        audioProcessor.m_grainEngine.setGrainDeltaVector( grainDeltaGraph.getGraphAsVector() );
+        getGraphsAsVectors();
         audioProcessor.m_grainEngine.triggerNewCloud(true);
     };
     
@@ -81,12 +60,7 @@ Sjf_granSynthAudioProcessorEditor::Sjf_granSynthAudioProcessorEditor (Sjf_granSy
     randomGraphsButton.setButtonText("randomise graphs");
     randomGraphsButton.onClick = [this]
     {
-        grainPositionGraph.randomGraph();
-        grainPanGraph.randomGraph();
-        grainTransposeGraph.randomGraph();
-        grainSizeGraph.randomGraph();
-        grainGainGraph.randomGraph();
-        grainDeltaGraph.randomGraph();
+        randomiseGraphs();
     };
     
     addAndMakeVisible(&grainLengthSlider);
@@ -133,12 +107,22 @@ Sjf_granSynthAudioProcessorEditor::Sjf_granSynthAudioProcessorEditor (Sjf_granSy
     grainGainGraph.setGraphText("grain gain");
     addAndMakeVisible(&grainDeltaGraph);
     grainDeltaGraph.setGraphText("grain delta time");
+    addAndMakeVisible(&grainReverbGraph);
+    grainReverbGraph.setGraphText("grain reverb");
+    
+    addAndMakeVisible( &cloudLengthNumBox );
+    cloudLengthNumBox.setRange( 500.0f, 60000.0f, 1.0f );
+    cloudLengthNumBox.setTextValueSuffix(" ms");
+    cloudLengthNumBox.setValue( audioProcessor.m_grainEngine.getCloudLengthMS() );
+    cloudLengthNumBox.onValueChange = [this]{ audioProcessor.m_grainEngine.setCloudLength( cloudLengthNumBox.getValue() ); };
+    
     
     setSize (1000, 700);
 }
 
 Sjf_granSynthAudioProcessorEditor::~Sjf_granSynthAudioProcessorEditor()
 {
+    setLookAndFeel( nullptr );
 }
 
 //==============================================================================
@@ -154,11 +138,12 @@ void Sjf_granSynthAudioProcessorEditor::paint (juce::Graphics& g)
 
 void Sjf_granSynthAudioProcessorEditor::resized()
 {
-    loadSampleButton.setBounds(10, 10, 100, 20);
-    randomGraphsButton.setBounds(110, 10, 100, 20);
-    triggerRandomCloudButton.setBounds(10, 30, 100, 20);
-    triggerCloudButton.setBounds(110, 30, 100, 20);
-    
+    loadSampleButton.setBounds(800, 0, 100, 20);
+    randomGraphsButton.setBounds(800, 20, 100, 20);
+    triggerRandomCloudButton.setBounds(800, 40, 100, 20);
+    triggerCloudButton.setBounds(800, 60, 100, 20);
+    envTypeBox.setBounds(800, 80, 100, 20);
+    cloudLengthNumBox.setBounds(800, 100, 100, 20);
 //    grainLengthSlider.setBounds(50, 50, 200, 20);
 //    grainPanSlider.setBounds(50, 70, 200, 20);
 //    grainStartSlider.setBounds(50, 90, 200, 20);
@@ -166,13 +151,37 @@ void Sjf_granSynthAudioProcessorEditor::resized()
 //
     
     
-    grainDeltaGraph.setBounds(0, 50, 800, 100);
-    grainPositionGraph.setBounds(0, 150, 800, 100);
-    grainPanGraph.setBounds(0, 250, 800, 100);
-    grainTransposeGraph.setBounds(0, 350, 800, 100);
-    grainSizeGraph.setBounds(0, 450, 800, 100);
-    grainGainGraph.setBounds(0, 550, 800, 100);
+    grainDeltaGraph.setBounds(0, 0, 800, 100);
+    grainPositionGraph.setBounds(0, 100, 800, 100);
+    grainPanGraph.setBounds(0, 200, 800, 100);
+    grainTransposeGraph.setBounds(0, 300, 800, 100);
+    grainSizeGraph.setBounds(0, 400, 800, 100);
+    grainGainGraph.setBounds(0, 500, 800, 100);
+    grainReverbGraph.setBounds(0, 600, 800, 100);
     
-    envTypeBox.setBounds(0, 650, 150, 20);
+    
+    
+}
+
+void Sjf_granSynthAudioProcessorEditor::randomiseGraphs()
+{
+    grainPositionGraph.randomGraph();
+    grainPanGraph.randomGraph();
+    grainTransposeGraph.randomGraph();
+    grainSizeGraph.randomGraph();
+    grainGainGraph.randomGraph();
+    grainDeltaGraph.randomGraph();
+    grainReverbGraph.randomGraph();
+}
+
+void Sjf_granSynthAudioProcessorEditor::getGraphsAsVectors()
+{
+    audioProcessor.m_grainEngine.setGrainPositionVector( grainPositionGraph.getGraphAsVector() );
+    audioProcessor.m_grainEngine.setGrainPanVector( grainPanGraph.getGraphAsVector() );
+    audioProcessor.m_grainEngine.setGrainTranspositionVector( grainTransposeGraph.getGraphAsVector() );
+    audioProcessor.m_grainEngine.setGrainSizeVector( grainSizeGraph.getGraphAsVector() );
+    audioProcessor.m_grainEngine.setGrainGainVector( grainGainGraph.getGraphAsVector() );
+    audioProcessor.m_grainEngine.setGrainDeltaVector( grainDeltaGraph.getGraphAsVector() );
+    audioProcessor.m_grainEngine.setGrainReverbVector( grainReverbGraph.getGraphAsVector() );
     
 }
