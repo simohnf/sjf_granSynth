@@ -137,7 +137,8 @@ void Sjf_granSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
     
     buffer.clear();
 //    m_grainEngine.playGrains(buffer);
-    m_grainEngine.playCloud(buffer);
+//    m_grainEngine.playCloud(buffer);
+    m_grainEngine.playCloudFromVectors( buffer );
 }
 
 //==============================================================================

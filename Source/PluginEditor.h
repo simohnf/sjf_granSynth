@@ -11,6 +11,7 @@
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
 #include "/Users/simonfay/Programming_Stuff/sjf_audio/sjf_lookAndFeel.h"
+#include "/Users/simonfay/Programming_Stuff/sjf_audio/sjf_graph.h"
 //==============================================================================
 /**
 */
@@ -26,10 +27,11 @@ public:
 
 private:
     
-    juce::TextButton loadSampleButton, triggerGrainButton, triggerCloudButton;
+    juce::TextButton loadSampleButton, triggerRandomCloudButton, triggerCloudButton, randomGraphsButton;
     juce::ComboBox envTypeBox;
     juce::Label startLabel, panLabel, transposeLabel, lengthLabel;
     juce::Slider grainStartSlider, grainPanSlider, grainTranspositionSlider, grainLengthSlider;
+    sjf_grapher grainPositionGraph, grainPanGraph, grainTransposeGraph, grainSizeGraph, grainGainGraph, grainDeltaGraph;
     
     Sjf_granSynthAudioProcessor& audioProcessor;
 
