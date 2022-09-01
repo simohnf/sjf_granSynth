@@ -132,8 +132,8 @@ bool Sjf_granSynthAudioProcessor::isBusesLayoutSupported (const BusesLayout& lay
 void Sjf_granSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
-    auto totalNumInputChannels  = getTotalNumInputChannels();
-    auto totalNumOutputChannels = getTotalNumOutputChannels();
+//    auto totalNumInputChannels  = getTotalNumInputChannels();
+//    auto totalNumOutputChannels = getTotalNumOutputChannels();
     
     buffer.clear();
 //    m_grainEngine.playGrains(buffer);
