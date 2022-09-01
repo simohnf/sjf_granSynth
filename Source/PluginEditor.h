@@ -10,9 +10,9 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
-#include "/Users/simonfay/JUCE_PROJECTS/sjf_audio/sjf_lookAndFeel.h"
-#include "/Users/simonfay/JUCE_PROJECTS/sjf_audio/sjf_graph.h"
-#include "/Users/simonfay/JUCE_PROJECTS/sjf_audio/sjf_numBox.h"
+#include "/Users/simonfay/Programming_Stuff/sjf_audio/sjf_lookAndFeel.h"
+#include "/Users/simonfay/Programming_Stuff/sjf_audio/sjf_graph.h"
+#include "/Users/simonfay/Programming_Stuff/sjf_audio/sjf_numBox.h"
 //==============================================================================
 /**
 */
@@ -32,7 +32,7 @@ private:
     
     juce::TextButton loadSampleButton, triggerRandomCloudButton, triggerCloudButton, randomGraphsButton;
     juce::ComboBox envTypeBox;
-    juce::Label startLabel, panLabel, transposeLabel, lengthLabel;
+//    juce::Label startLabel, panLabel, transposeLabel, lengthLabel;
     juce::Slider grainStartSlider, grainPanSlider, grainTranspositionSlider, grainLengthSlider;
     sjf_numBox cloudLengthNumBox;
     sjf_grapher grainPositionGraph, grainPanGraph, grainTransposeGraph, grainSizeGraph, grainGainGraph, grainDeltaGraph, grainReverbGraph;
