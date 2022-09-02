@@ -64,6 +64,29 @@ public:
 public:
     sjf_grainEngine m_grainEngine;
     
+    
+    
+//    juce::AudioProcessorValueTreeState parameters;
+//    
+//    std::atomic<float>* revParameter = nullptr;
+//    std::atomic<float>* divParameter = nullptr;
+//    std::atomic<float>* speedParameter = nullptr;
+//    std::atomic<float>* ampParameter = nullptr;
+//    std::atomic<float>* shuffleParameter = nullptr;
+//    
+//    std::atomic<float>* nSlicesParameter = nullptr;
+//    std::atomic<float>* nStepsParameter = nullptr;
+//    std::atomic<float>* fadeParameter = nullptr;
+//    
+//    std::atomic<float>* randOnLoopParameter = nullptr;
+//    std::atomic<float>* syncToHostParameter = nullptr;
+//    std::atomic<float>* phaseRateMultiplierParameter = nullptr;
+//    std::atomic<float>* interpolationTypeParameter = nullptr;
+//    
+//    std::atomic<float>* playStateParameter = nullptr;
+//    
+//    juce::Value filePathParameter;
+    
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Sjf_granSynthAudioProcessor)
 };

@@ -129,13 +129,13 @@ void Sjf_granSynthAudioProcessorEditor::resized()
     auto graphHeight =  (float)getHeight()  / 7.0f;
     auto buttonWidth = getWidth() - graphWidth;
     auto buttonHeight = 20.0f;
-    loadSampleButton.setBounds( graphWidth, 0, buttonWidth, 20);
-    randomGraphsButton.setBounds( graphWidth, buttonHeight, buttonWidth, 20);
-    triggerRandomCloudButton.setBounds( graphWidth, buttonHeight*2, buttonWidth, buttonHeight*4);
-    triggerCloudButton.setBounds( graphWidth, buttonHeight*6, buttonWidth, buttonHeight*4);
-    envTypeBox.setBounds( graphWidth, buttonHeight*10, buttonWidth, buttonHeight);
-    cloudLengthNumBox.setBounds( graphWidth, buttonHeight*11, buttonWidth, buttonHeight);
-    deltaSizeLinkToggle.setBounds(graphWidth, buttonHeight*12, buttonWidth, buttonHeight*4);
+    loadSampleButton.setBounds( graphWidth, 0, buttonWidth, buttonHeight);
+    randomGraphsButton.setBounds( graphWidth, buttonHeight*2, buttonWidth, buttonHeight);
+    triggerRandomCloudButton.setBounds( graphWidth, buttonHeight*3, buttonWidth, buttonHeight*4);
+    triggerCloudButton.setBounds( graphWidth, buttonHeight*7, buttonWidth, buttonHeight*4);
+    envTypeBox.setBounds( graphWidth, buttonHeight*11, buttonWidth, buttonHeight);
+    cloudLengthNumBox.setBounds( graphWidth, buttonHeight*12, buttonWidth, buttonHeight);
+    deltaSizeLinkToggle.setBounds(graphWidth, buttonHeight*13, buttonWidth, buttonHeight*4);
     
     
     grainDeltaGraph.setBounds(0, 0, graphWidth, graphHeight);
