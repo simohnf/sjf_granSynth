@@ -97,7 +97,7 @@ Sjf_granSynthAudioProcessorEditor::Sjf_granSynthAudioProcessorEditor (Sjf_granSy
     
     
     addAndMakeVisible( &deltaSizeLinkToggle );
-    deltaSizeLinkToggle.setButtonText("link delta time and grainSize");
+    deltaSizeLinkToggle.setButtonText("link delta time and grain size");
     deltaSizeLinkToggle.onStateChange = [this]{ audioProcessor.m_grainEngine.linkSizeAndDeltaTime( deltaSizeLinkToggle.getToggleState() ); };
     
     startTimer(100);
@@ -119,6 +119,7 @@ void Sjf_granSynthAudioProcessorEditor::paint (juce::Graphics& g)
     g.setColour (juce::Colours::white);
     g.setFont (15.0f);
 //    g.drawFittedText ("Hello World!", getLocalBounds(), juce::Justification::centred, 1);
+    g.drawFittedText("sjf_granSynth", 0, 0, getWidth(), 20, juce::Justification::centred, 1);
 
     
 }
@@ -126,25 +127,26 @@ void Sjf_granSynthAudioProcessorEditor::paint (juce::Graphics& g)
 void Sjf_granSynthAudioProcessorEditor::resized()
 {
     auto graphWidth =  (float)getWidth() * 0.8f;
-    auto graphHeight =  (float)getHeight()  / 7.0f;
-    auto buttonWidth = getWidth() - graphWidth;
+    auto graphHeight = ( (float)getHeight() -20.0f ) / 7.0f ;
+    auto buttonWidth = 0.8f * (getWidth() - graphWidth);
     auto buttonHeight = 20.0f;
-    loadSampleButton.setBounds( graphWidth, 0, buttonWidth, buttonHeight);
-    randomGraphsButton.setBounds( graphWidth, buttonHeight*2, buttonWidth, buttonHeight);
-    triggerRandomCloudButton.setBounds( graphWidth, buttonHeight*3, buttonWidth, buttonHeight*4);
-    triggerCloudButton.setBounds( graphWidth, buttonHeight*7, buttonWidth, buttonHeight*4);
-    envTypeBox.setBounds( graphWidth, buttonHeight*11, buttonWidth, buttonHeight);
-    cloudLengthNumBox.setBounds( graphWidth, buttonHeight*12, buttonWidth, buttonHeight);
-    deltaSizeLinkToggle.setBounds(graphWidth, buttonHeight*13, buttonWidth, buttonHeight*4);
+    auto gap = 0.1f * (getWidth() - graphWidth);
+    loadSampleButton.setBounds( gap+graphWidth, 20, buttonWidth, buttonHeight);
+    randomGraphsButton.setBounds( gap+graphWidth, buttonHeight*3, buttonWidth, buttonHeight);
+    triggerRandomCloudButton.setBounds( gap+graphWidth, buttonHeight*4, buttonWidth, buttonHeight*4);
+    triggerCloudButton.setBounds( gap+graphWidth, buttonHeight*9, buttonWidth, buttonHeight*4);
+    envTypeBox.setBounds( gap+graphWidth, buttonHeight*13, buttonWidth, buttonHeight);
+    cloudLengthNumBox.setBounds( gap+graphWidth, buttonHeight*14, buttonWidth, buttonHeight);
+    deltaSizeLinkToggle.setBounds(gap+graphWidth, buttonHeight*16, buttonWidth, buttonHeight*4);
     
     
-    grainDeltaGraph.setBounds(0, 0, graphWidth, graphHeight);
-    grainPositionGraph.setBounds(0, graphHeight, graphWidth, graphHeight);
-    grainPanGraph.setBounds(0, graphHeight*2, graphWidth, graphHeight);
-    grainTransposeGraph.setBounds(0, graphHeight*3, graphWidth, graphHeight);
-    grainSizeGraph.setBounds(0, graphHeight*4, graphWidth, graphHeight);
-    grainGainGraph.setBounds(0, graphHeight*5, graphWidth, graphHeight);
-    grainReverbGraph.setBounds(0, graphHeight*6, graphWidth, graphHeight);
+    grainDeltaGraph.setBounds(0, 20, graphWidth, graphHeight);
+    grainPositionGraph.setBounds(0, 20 + graphHeight, graphWidth, graphHeight);
+    grainPanGraph.setBounds(0, 20 + graphHeight*2, graphWidth, graphHeight);
+    grainTransposeGraph.setBounds(0,20 +  graphHeight*3, graphWidth, graphHeight);
+    grainSizeGraph.setBounds(0, 20 + graphHeight*4, graphWidth, graphHeight);
+    grainGainGraph.setBounds(0, 20 + graphHeight*5, graphWidth, graphHeight);
+    grainReverbGraph.setBounds(0, 20 +graphHeight*6, graphWidth, graphHeight);
     
     reverbSizeSlider.setBounds(grainReverbGraph.getX() + graphWidth, grainReverbGraph.getY(), (getWidth() - graphWidth) * 0.5f, graphHeight);
     reverbSizeSlider.setTextBoxStyle (juce::Slider::TextBoxBelow, false, reverbSizeSlider.getWidth(), buttonHeight);

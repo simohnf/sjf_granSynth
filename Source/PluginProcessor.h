@@ -66,8 +66,8 @@ public:
     
     
     
-//    juce::AudioProcessorValueTreeState parameters;
-//    
+    juce::AudioProcessorValueTreeState parameters;
+//
 //    std::atomic<float>* revParameter = nullptr;
 //    std::atomic<float>* divParameter = nullptr;
 //    std::atomic<float>* speedParameter = nullptr;
@@ -85,7 +85,7 @@ public:
 //    
 //    std::atomic<float>* playStateParameter = nullptr;
 //    
-//    juce::Value filePathParameter;
+    juce::Value filePathParameter;
     
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Sjf_granSynthAudioProcessor)
