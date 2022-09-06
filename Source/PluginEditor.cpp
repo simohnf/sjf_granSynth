@@ -205,6 +205,14 @@ void Sjf_granSynthAudioProcessorEditor::randomiseVariables()
     audioProcessor.m_grainEngine.setCloudLength( m_cloudLength );
     cloudLengthNumBox.setValue( m_cloudLength, juce::dontSendNotification );
     
+    auto revDamp = rand01();
+    audioProcessor.m_grainEngine.setReverbDamping( revDamp );
+    reverbDampingSlider.setValue( revDamp, juce::dontSendNotification );
+    
+    auto revSize = rand01();
+    audioProcessor.m_grainEngine.setReverbSize( revSize );
+    reverbSizeSlider.setValue( revSize, juce::dontSendNotification );
+    
     auto envType = 1 + (int)( rand01() * envTypeBox.getNumItems() );
     audioProcessor.m_grainEngine.setEnvType( envType );
     envTypeBox.setSelectedId( envType, juce::dontSendNotification );
