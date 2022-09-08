@@ -16,6 +16,8 @@
 //==============================================================================
 /**
 */
+
+
 class Sjf_granSynthAudioProcessorEditor  : public juce::AudioProcessorEditor, public juce::Timer
 {
 public:
@@ -45,5 +47,7 @@ private:
     void timerCallback() override;
     
     sjf_lookAndFeel otherLookandFeel;
+    
+    juce::TooltipWindow tooltipWindow {this, 700};
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Sjf_granSynthAudioProcessorEditor)
 };

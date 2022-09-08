@@ -177,8 +177,8 @@ void Sjf_granSynthAudioProcessor::setStateInformation (const void* data, int siz
         if (xmlState->hasTagName (parameters.state.getType())){
             parameters.replaceState (juce::ValueTree::fromXml (*xmlState));
             filePathParameter.referTo(parameters.state.getPropertyAsValue("sampleFilePath", nullptr) );
-            if (filePathParameter == juce::Value{}){ return; }
-            m_grainEngine.loadSample( filePathParameter );
+            if (filePathParameter != juce::Value{}){ m_grainEngine.loadSample( filePathParameter ); }
+            
             
         }
 }

@@ -23,12 +23,13 @@ Sjf_granSynthAudioProcessorEditor::Sjf_granSynthAudioProcessorEditor (Sjf_granSy
     envTypeBox.addItem("expodec", 4);
     envTypeBox.addItem("rexpodec", 5);
     envTypeBox.onChange = [this]{ audioProcessor.m_grainEngine.setEnvType( envTypeBox.getSelectedId() ); };
-    envTypeBox.setSelectedId(1);
+    envTypeBox.setSelectedId( audioProcessor.m_grainEngine.getEnvType() );
+    envTypeBox.setTooltip("This determines the envelope/window to be applied to each grain.");
     
     addAndMakeVisible(&loadSampleButton);
     loadSampleButton.setButtonText("load sample");
     loadSampleButton.onClick = [this]{ audioProcessor.m_grainEngine.loadSample() ; };
-    
+    loadSampleButton.setTooltip("Use this to load a .wav audio sample to granulate.");
 
     
     addAndMakeVisible(&triggerRandomCloudButton);
@@ -39,6 +40,7 @@ Sjf_granSynthAudioProcessorEditor::Sjf_granSynthAudioProcessorEditor (Sjf_granSy
         randomiseVariables();
         triggerNewCloud();
     };
+    triggerRandomCloudButton.setTooltip("This will trigger a new, random cloud.");
     
     addAndMakeVisible(&triggerCloudButton);
     triggerCloudButton.setButtonText("trigger cloud");
@@ -46,6 +48,7 @@ Sjf_granSynthAudioProcessorEditor::Sjf_granSynthAudioProcessorEditor (Sjf_granSy
     {
         triggerNewCloud();
     };
+    triggerCloudButton.setTooltip("This triggers a cloud using all of the currently selected parameters.");
     
     addAndMakeVisible(&randomGraphsButton);
     randomGraphsButton.setButtonText("randomise graphs");
@@ -53,52 +56,90 @@ Sjf_granSynthAudioProcessorEditor::Sjf_granSynthAudioProcessorEditor (Sjf_granSy
     {
         randomiseGraphs();
     };
-    
-    
+    randomGraphsButton.setTooltip("This will randomise the graphs, but will not trigger a cloud.");
+
     addAndMakeVisible(&grainPositionGraph);
     grainPositionGraph.setGraphText("grain start position");
+    if ( audioProcessor.m_grainEngine.getGrainPositionVector().size() > 0 )
+    {
+        grainPositionGraph.setGraph( audioProcessor.m_grainEngine.getGrainPositionVector() );
+    }
+    
     addAndMakeVisible(&grainPanGraph);
     grainPanGraph.setGraphText("grain pan");
+    if ( audioProcessor.m_grainEngine.getGrainPanVector().size() > 0 )
+    {
+        grainPanGraph.setGraph( audioProcessor.m_grainEngine.getGrainPanVector() );
+    }
+    
     addAndMakeVisible(&grainTransposeGraph);
     grainTransposeGraph.setGraphText("grain transpose");
+    if ( audioProcessor.m_grainEngine.getGrainTranspositionVector().size() > 0 )
+    {
+        grainTransposeGraph.setGraph( audioProcessor.m_grainEngine.getGrainTranspositionVector() );
+    }
+    
     addAndMakeVisible(&grainSizeGraph);
     grainSizeGraph.setGraphText("grain size");
+    if ( audioProcessor.m_grainEngine.getGrainSizeVector().size() > 0 )
+    {
+        grainSizeGraph.setGraph( audioProcessor.m_grainEngine.getGrainSizeVector() );
+    }
+    
     addAndMakeVisible(&grainGainGraph);
     grainGainGraph.setGraphText("grain gain");
+    if ( audioProcessor.m_grainEngine.getGrainGainVector().size() > 0 )
+    {
+        grainGainGraph.setGraph( audioProcessor.m_grainEngine.getGrainGainVector() );
+    }
+    
     addAndMakeVisible(&grainDeltaGraph);
     grainDeltaGraph.setGraphText("grain delta time");
+    if ( audioProcessor.m_grainEngine.getGrainDeltaVector().size() > 0 )
+    {
+        grainDeltaGraph.setGraph( audioProcessor.m_grainEngine.getGrainDeltaVector() );
+    }
+    
     addAndMakeVisible(&grainReverbGraph);
     grainReverbGraph.setGraphText("grain reverb");
+    if ( audioProcessor.m_grainEngine.getGrainReverbVector().size() > 0 )
+    {
+        grainReverbGraph.setGraph( audioProcessor.m_grainEngine.getGrainReverbVector() );
+    }
+    
     
     addAndMakeVisible( &cloudLengthNumBox );
     cloudLengthNumBox.setRange( 500.0f, 60000.0f, 1.0f );
     cloudLengthNumBox.setTextValueSuffix(" ms");
     cloudLengthNumBox.setValue( audioProcessor.m_grainEngine.getCloudLengthMS() );
     cloudLengthNumBox.onValueChange = [this]{ m_cloudLength = cloudLengthNumBox.getValue(); };
+    cloudLengthNumBox.setTooltip("This determines the length of the cloud to be generated (not including any reverb tail)");
     
     
     addAndMakeVisible( &reverbSizeSlider );
     reverbSizeSlider.setRange(0, 1);
-    reverbSizeSlider.setValue(0.5);
+    reverbSizeSlider.setValue( audioProcessor.m_grainEngine.getReverbSize() );
     reverbSizeSlider.setSliderStyle( juce::Slider::Rotary );
     addAndMakeVisible( &revSizeLabel );
     revSizeLabel.attachToComponent( &reverbSizeSlider, false );
     revSizeLabel.setText("size", juce::dontSendNotification);
     revSizeLabel.setJustificationType( juce::Justification::centred );
+    reverbSizeSlider.setTooltip("This sets the room size of the reverb");
     
     addAndMakeVisible( &reverbDampingSlider );
     reverbDampingSlider.setRange(0, 1);
-    reverbDampingSlider.setValue(0.5);
+    reverbDampingSlider.setValue( audioProcessor.m_grainEngine.getReverbDamping() );
     reverbDampingSlider.setSliderStyle( juce::Slider::Rotary );
     addAndMakeVisible( &revDampingLabel );
     revDampingLabel.attachToComponent( &reverbDampingSlider, false );
     revDampingLabel.setText("damp", juce::dontSendNotification);
     revDampingLabel.setJustificationType( juce::Justification::centred );
-    
+    reverbDampingSlider.setTooltip("This sets the amount of high frequency damping applied to the reverb");
     
     addAndMakeVisible( &deltaSizeLinkToggle );
     deltaSizeLinkToggle.setButtonText("link delta time and grain size");
     deltaSizeLinkToggle.onStateChange = [this]{ audioProcessor.m_grainEngine.linkSizeAndDeltaTime( deltaSizeLinkToggle.getToggleState() ); };
+    deltaSizeLinkToggle.setTooltip("If the deltatime (time between grains) is very short, and grain size (length of grains) are is long cpu usage can be very high - causing audio glitches. Linking both parameters means that the grain size will be limited to a maximum of 10 times the delta time. This should reduce any audio glitches... hopefully!");
     
     startTimer(100);
     
@@ -152,6 +193,8 @@ void Sjf_granSynthAudioProcessorEditor::resized()
     reverbSizeSlider.setTextBoxStyle (juce::Slider::TextBoxBelow, false, reverbSizeSlider.getWidth(), buttonHeight);
     reverbDampingSlider.setBounds(reverbSizeSlider.getX() + reverbSizeSlider.getWidth(), reverbSizeSlider.getY(), reverbSizeSlider.getWidth(), graphHeight);
     reverbDampingSlider.setTextBoxStyle (juce::Slider::TextBoxBelow, false, reverbDampingSlider.getWidth(), buttonHeight);
+    
+
 }
 
 void Sjf_granSynthAudioProcessorEditor::randomiseGraphs()
