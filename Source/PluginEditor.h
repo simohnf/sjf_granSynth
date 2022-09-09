@@ -37,17 +37,19 @@ private:
     juce::ComboBox envTypeBox;
     sjf_numBox cloudLengthNumBox;
     sjf_grapher grainPositionGraph, grainPanGraph, grainTransposeGraph, grainSizeGraph, grainGainGraph, grainDeltaGraph, grainReverbGraph;
-    juce::Label revSizeLabel, revDampingLabel;
+    juce::Label revSizeLabel, revDampingLabel, sampleNameLabel;
     juce::Slider reverbSizeSlider, reverbDampingSlider;
     Sjf_granSynthAudioProcessor& audioProcessor;
-    juce::ToggleButton deltaSizeLinkToggle;
+    juce::ToggleButton deltaSizeLinkToggle, tooltipsToggle;
     
+    bool tooltipsFlag;
     float m_cloudLength;
 
     void timerCallback() override;
     
     sjf_lookAndFeel otherLookandFeel;
     
-    juce::TooltipWindow tooltipWindow {this, 700};
+//    juce::TooltipWindow tooltipWindow {this, 700};
+    juce::SharedResourcePointer<juce::TooltipWindow> tooltipWindow;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Sjf_granSynthAudioProcessorEditor)
 };

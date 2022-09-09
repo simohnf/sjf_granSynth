@@ -15,6 +15,7 @@ Sjf_granSynthAudioProcessorEditor::Sjf_granSynthAudioProcessorEditor (Sjf_granSy
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
     setLookAndFeel( &otherLookandFeel );
+    getLookAndFeel().setColour(juce::Slider::rotarySliderFillColourId, juce::Colours::white.withAlpha(0.7f));
     
     addAndMakeVisible(&envTypeBox);
     envTypeBox.addItem("hann", 1);
@@ -29,7 +30,7 @@ Sjf_granSynthAudioProcessorEditor::Sjf_granSynthAudioProcessorEditor (Sjf_granSy
     addAndMakeVisible(&loadSampleButton);
     loadSampleButton.setButtonText("load sample");
     loadSampleButton.onClick = [this]{ audioProcessor.m_grainEngine.loadSample() ; };
-    loadSampleButton.setTooltip("Use this to load a .wav audio sample to granulate.");
+    loadSampleButton.setTooltip("Use this to load a .wav/.aif audio sample to granulate.");
 
     
     addAndMakeVisible(&triggerRandomCloudButton);
@@ -57,13 +58,16 @@ Sjf_granSynthAudioProcessorEditor::Sjf_granSynthAudioProcessorEditor (Sjf_granSy
         randomiseGraphs();
     };
     randomGraphsButton.setTooltip("This will randomise the graphs, but will not trigger a cloud.");
-
+    
     addAndMakeVisible(&grainPositionGraph);
     grainPositionGraph.setGraphText("grain start position");
     if ( audioProcessor.m_grainEngine.getGrainPositionVector().size() > 0 )
     {
         grainPositionGraph.setGraph( audioProcessor.m_grainEngine.getGrainPositionVector() );
     }
+    grainPositionGraph.setTopLabel("End of file");
+    grainPositionGraph.setBottomLabel("Beginning of file");
+    grainPositionGraph.setTooltip("This determines the starting point of each grain in relation to the total length of the audio file");
     
     addAndMakeVisible(&grainPanGraph);
     grainPanGraph.setGraphText("grain pan");
@@ -71,6 +75,9 @@ Sjf_granSynthAudioProcessorEditor::Sjf_granSynthAudioProcessorEditor (Sjf_granSy
     {
         grainPanGraph.setGraph( audioProcessor.m_grainEngine.getGrainPanVector() );
     }
+    grainPanGraph.setTooltip("This determines the panning for each grain");
+    grainPanGraph.setTopLabel("Right");
+    grainPanGraph.setBottomLabel("Left");
     
     addAndMakeVisible(&grainTransposeGraph);
     grainTransposeGraph.setGraphText("grain transpose");
@@ -78,6 +85,7 @@ Sjf_granSynthAudioProcessorEditor::Sjf_granSynthAudioProcessorEditor (Sjf_granSy
     {
         grainTransposeGraph.setGraph( audioProcessor.m_grainEngine.getGrainTranspositionVector() );
     }
+    grainTransposeGraph.setTooltip("This determines the pitch shifting applied to each grain (a maximum of one octave up or down)");
     
     addAndMakeVisible(&grainSizeGraph);
     grainSizeGraph.setGraphText("grain size");
@@ -85,6 +93,9 @@ Sjf_granSynthAudioProcessorEditor::Sjf_granSynthAudioProcessorEditor (Sjf_granSy
     {
         grainSizeGraph.setGraph( audioProcessor.m_grainEngine.getGrainSizeVector() );
     }
+    grainSizeGraph.setTooltip("This determines the length of each grain");
+    grainSizeGraph.setTopLabel("100ms");
+    grainSizeGraph.setBottomLabel("1ms");
     
     addAndMakeVisible(&grainGainGraph);
     grainGainGraph.setGraphText("grain gain");
@@ -92,6 +103,9 @@ Sjf_granSynthAudioProcessorEditor::Sjf_granSynthAudioProcessorEditor (Sjf_granSy
     {
         grainGainGraph.setGraph( audioProcessor.m_grainEngine.getGrainGainVector() );
     }
+    grainGainGraph.setTooltip("This determines the gain to be applied to each grain");
+    grainGainGraph.setTopLabel("100%");
+    grainGainGraph.setBottomLabel("0%");
     
     addAndMakeVisible(&grainDeltaGraph);
     grainDeltaGraph.setGraphText("grain delta time");
@@ -99,6 +113,9 @@ Sjf_granSynthAudioProcessorEditor::Sjf_granSynthAudioProcessorEditor (Sjf_granSy
     {
         grainDeltaGraph.setGraph( audioProcessor.m_grainEngine.getGrainDeltaVector() );
     }
+    grainDeltaGraph.setTooltip("This determines the time between each grain");
+    grainDeltaGraph.setTopLabel("100ms");
+    grainDeltaGraph.setBottomLabel("1ms");
     
     addAndMakeVisible(&grainReverbGraph);
     grainReverbGraph.setGraphText("grain reverb");
@@ -106,7 +123,9 @@ Sjf_granSynthAudioProcessorEditor::Sjf_granSynthAudioProcessorEditor (Sjf_granSy
     {
         grainReverbGraph.setGraph( audioProcessor.m_grainEngine.getGrainReverbVector() );
     }
-    
+    grainReverbGraph.setTooltip("This determines the amount of reverb for each grain");
+    grainReverbGraph.setTopLabel("Wet");
+    grainReverbGraph.setBottomLabel("Dry");
     
     addAndMakeVisible( &cloudLengthNumBox );
     cloudLengthNumBox.setRange( 500.0f, 60000.0f, 1.0f );
@@ -114,6 +133,7 @@ Sjf_granSynthAudioProcessorEditor::Sjf_granSynthAudioProcessorEditor (Sjf_granSy
     cloudLengthNumBox.setValue( audioProcessor.m_grainEngine.getCloudLengthMS() );
     cloudLengthNumBox.onValueChange = [this]{ m_cloudLength = cloudLengthNumBox.getValue(); };
     cloudLengthNumBox.setTooltip("This determines the length of the cloud to be generated (not including any reverb tail)");
+    cloudLengthNumBox.sendLookAndFeelChange();
     
     
     addAndMakeVisible( &reverbSizeSlider );
@@ -138,12 +158,43 @@ Sjf_granSynthAudioProcessorEditor::Sjf_granSynthAudioProcessorEditor (Sjf_granSy
     
     addAndMakeVisible( &deltaSizeLinkToggle );
     deltaSizeLinkToggle.setButtonText("link delta time and grain size");
-    deltaSizeLinkToggle.onStateChange = [this]{ audioProcessor.m_grainEngine.linkSizeAndDeltaTime( deltaSizeLinkToggle.getToggleState() ); };
-    deltaSizeLinkToggle.setTooltip("If the deltatime (time between grains) is very short, and grain size (length of grains) are is long cpu usage can be very high - causing audio glitches. Linking both parameters means that the grain size will be limited to a maximum of 10 times the delta time. This should reduce any audio glitches... hopefully!");
+    deltaSizeLinkToggle.onStateChange = [this]
+    {
+        audioProcessor.m_grainEngine.linkSizeAndDeltaTime( deltaSizeLinkToggle.getToggleState() );
+        if (deltaSizeLinkToggle.getToggleState())
+        {
+            grainSizeGraph.setTopLabel("Delta * 10");
+            grainSizeGraph.setBottomLabel("Delta * 1");
+        }
+        else
+        {
+            grainSizeGraph.setTopLabel("100ms");
+            grainSizeGraph.setBottomLabel("1ms");
+        }
+    };
+    deltaSizeLinkToggle.setTooltip("If the deltatime (time between grains) is very short, and grain size (length of grains) is long cpu usage can be very high - causing audio glitches. Linking both parameters means that the grain size will be limited to a maximum of 10 times the delta time. This should reduce any audio glitches... hopefully!");
+    
+    
+    addAndMakeVisible(&tooltipsToggle);
+    tooltipsToggle.setButtonText("Hints");
+    tooltipsToggle.onStateChange = [this]
+    {
+        if (tooltipsToggle.getToggleState())
+        {
+            tooltipWindow.getObject().setAlpha(1.0f);
+        }
+        else
+        {
+            tooltipWindow.getObject().setAlpha(0.0f);
+        }
+    };
+    tooltipWindow.getObject().setAlpha(0.0f);
+    
+    addAndMakeVisible(&sampleNameLabel);
     
     startTimer(100);
     
-    setSize (600, 500);
+    setSize (620, 500);
 }
 
 Sjf_granSynthAudioProcessorEditor::~Sjf_granSynthAudioProcessorEditor()
@@ -167,10 +218,11 @@ void Sjf_granSynthAudioProcessorEditor::paint (juce::Graphics& g)
 
 void Sjf_granSynthAudioProcessorEditor::resized()
 {
+    auto offset = 20.0f;
     auto graphWidth =  (float)getWidth() * 0.8f;
-    auto graphHeight = ( (float)getHeight() -20.0f ) / 7.0f ;
+    auto graphHeight = ( (float)getHeight() -40.0f ) / 7.0f ;
     auto buttonWidth = 0.8f * (getWidth() - graphWidth);
-    auto buttonHeight = 20.0f;
+    auto buttonHeight = offset;
     auto gap = 0.1f * (getWidth() - graphWidth);
     loadSampleButton.setBounds( gap+graphWidth, 20, buttonWidth, buttonHeight);
     randomGraphsButton.setBounds( gap+graphWidth, buttonHeight*3, buttonWidth, buttonHeight);
@@ -178,16 +230,16 @@ void Sjf_granSynthAudioProcessorEditor::resized()
     triggerCloudButton.setBounds( gap+graphWidth, buttonHeight*9, buttonWidth, buttonHeight*4);
     envTypeBox.setBounds( gap+graphWidth, buttonHeight*13, buttonWidth, buttonHeight);
     cloudLengthNumBox.setBounds( gap+graphWidth, buttonHeight*14, buttonWidth, buttonHeight);
-    deltaSizeLinkToggle.setBounds(gap+graphWidth, buttonHeight*16, buttonWidth, buttonHeight*4);
+    deltaSizeLinkToggle.setBounds(gap+graphWidth, buttonHeight*16, buttonWidth, buttonHeight*3);
     
     
-    grainDeltaGraph.setBounds(0, 20, graphWidth, graphHeight);
-    grainPositionGraph.setBounds(0, 20 + graphHeight, graphWidth, graphHeight);
-    grainPanGraph.setBounds(0, 20 + graphHeight*2, graphWidth, graphHeight);
-    grainTransposeGraph.setBounds(0,20 +  graphHeight*3, graphWidth, graphHeight);
-    grainSizeGraph.setBounds(0, 20 + graphHeight*4, graphWidth, graphHeight);
-    grainGainGraph.setBounds(0, 20 + graphHeight*5, graphWidth, graphHeight);
-    grainReverbGraph.setBounds(0, 20 +graphHeight*6, graphWidth, graphHeight);
+    grainDeltaGraph.setBounds(0, offset, graphWidth, graphHeight);
+    grainPositionGraph.setBounds(0, offset + graphHeight, graphWidth, graphHeight);
+    grainPanGraph.setBounds(0, offset + graphHeight*2, graphWidth, graphHeight);
+    grainTransposeGraph.setBounds(0,offset +  graphHeight*3, graphWidth, graphHeight);
+    grainSizeGraph.setBounds(0, offset + graphHeight*4, graphWidth, graphHeight);
+    grainGainGraph.setBounds(0, offset + graphHeight*5, graphWidth, graphHeight);
+    grainReverbGraph.setBounds(0, offset +graphHeight*6, graphWidth, graphHeight);
     
     reverbSizeSlider.setBounds(grainReverbGraph.getX() + graphWidth, grainReverbGraph.getY(), (getWidth() - graphWidth) * 0.5f, graphHeight);
     reverbSizeSlider.setTextBoxStyle (juce::Slider::TextBoxBelow, false, reverbSizeSlider.getWidth(), buttonHeight);
@@ -195,6 +247,9 @@ void Sjf_granSynthAudioProcessorEditor::resized()
     reverbDampingSlider.setTextBoxStyle (juce::Slider::TextBoxBelow, false, reverbDampingSlider.getWidth(), buttonHeight);
     
 
+    tooltipsToggle.setBounds(0, getHeight() - offset, graphWidth * 0.15f, buttonHeight);
+    
+    sampleNameLabel.setBounds(tooltipsToggle.getWidth(), tooltipsToggle.getY(), getWidth() - tooltipsToggle.getWidth(), buttonHeight);
 }
 
 void Sjf_granSynthAudioProcessorEditor::randomiseGraphs()
@@ -230,6 +285,11 @@ void Sjf_granSynthAudioProcessorEditor::timerCallback()
     grainGainGraph.setGraphPosition( cloudPhase );
     grainDeltaGraph.setGraphPosition( cloudPhase );
     grainReverbGraph.setGraphPosition( cloudPhase );
+    
+    sampleNameLabel.setText(audioProcessor.m_grainEngine.m_samplePath.getFileName(), juce::dontSendNotification);
+    sampleNameLabel.setJustificationType(juce::Justification::centred);
+    
+    cloudLengthNumBox.setRange( 500.0f, fmax( 60000.0f, audioProcessor.m_grainEngine.getDurationMS() ), 1.0f );
 }
 
 void Sjf_granSynthAudioProcessorEditor::triggerNewCloud()
@@ -260,3 +320,10 @@ void Sjf_granSynthAudioProcessorEditor::randomiseVariables()
     audioProcessor.m_grainEngine.setEnvType( envType );
     envTypeBox.setSelectedId( envType, juce::dontSendNotification );
 }
+
+
+
+//==============================================================================
+
+
+

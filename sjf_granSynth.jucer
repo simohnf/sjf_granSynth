@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="grKBWE" name="sjf_granSynth" projectType="audioplug" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1">
+              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginManufacturer="sjf"
+              displaySplashScreen="1">
   <MAINGROUP id="qKUoab" name="sjf_granSynth">
     <GROUP id="{6505520D-BC6C-FB7D-2543-99CA2DAE832E}" name="Source">
       <FILE id="C0RSag" name="PluginProcessor.cpp" compile="1" resource="0"
