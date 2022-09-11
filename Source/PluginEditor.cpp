@@ -23,7 +23,7 @@ Sjf_granSynthAudioProcessorEditor::Sjf_granSynthAudioProcessorEditor (Sjf_granSy
     envTypeBox.addItem("sinc", 3);
     envTypeBox.addItem("expodec", 4);
     envTypeBox.addItem("rexpodec", 5);
-    envTypeBox.onChange = [this]{ audioProcessor.m_grainEngine.setEnvType( envTypeBox.getSelectedId() ); };
+    envTypeBox.onChange = [this]{ m_envType = envTypeBox.getSelectedId(); };
     envTypeBox.setSelectedId( audioProcessor.m_grainEngine.getEnvType() );
     envTypeBox.setTooltip("This determines the envelope/window to be applied to each grain.");
     
@@ -295,6 +295,7 @@ void Sjf_granSynthAudioProcessorEditor::timerCallback()
 void Sjf_granSynthAudioProcessorEditor::triggerNewCloud()
 {
     getGraphsAsVectors();
+    audioProcessor.m_grainEngine.setEnvType( m_envType );
     audioProcessor.m_grainEngine.setCloudLength( m_cloudLength );
     audioProcessor.m_grainEngine.setReverbSize( reverbSizeSlider.getValue() );
     audioProcessor.m_grainEngine.setReverbDamping( reverbDampingSlider.getValue() );

@@ -42,8 +42,8 @@ private:
     Sjf_granSynthAudioProcessor& audioProcessor;
     juce::ToggleButton deltaSizeLinkToggle, tooltipsToggle;
     
-    bool tooltipsFlag;
     float m_cloudLength;
+    int m_envType = 1;
 
     void timerCallback() override;
     
