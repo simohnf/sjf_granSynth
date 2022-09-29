@@ -31,7 +31,11 @@ public:
     void getGraphsAsVectors();
     void triggerNewCloud();
     void randomiseVariables();
+    
+    
 private:
+    
+    
     
     juce::TextButton loadSampleButton, triggerRandomCloudButton, triggerCloudButton, randomGraphsButton;
     juce::ComboBox envTypeBox;
