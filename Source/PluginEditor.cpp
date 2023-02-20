@@ -15,7 +15,8 @@ Sjf_granSynthAudioProcessorEditor::Sjf_granSynthAudioProcessorEditor (Sjf_granSy
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
     setLookAndFeel( &otherLookandFeel );
-    getLookAndFeel().setColour(juce::Slider::rotarySliderFillColourId, juce::Colours::white.withAlpha(0.7f));
+//    getLookAndFeel().setColour(juce::Slider::rotarySliderFillColourId, juce::Colours::white.withAlpha(0.7f));
+//    getLookAndFeel().setColour(juce::TextButton::buttonColourId, juce::Colours::darkgrey.withAlpha(0.2f));
     
     addAndMakeVisible(&envTypeBox);
     envTypeBox.addItem("hann", 1);
@@ -206,7 +207,8 @@ Sjf_granSynthAudioProcessorEditor::~Sjf_granSynthAudioProcessorEditor()
 void Sjf_granSynthAudioProcessorEditor::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
-    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
+    juce::Rectangle<int> r = getLocalBounds();
+    sjf_makeBackground< 20 >( g, r );
 
     g.setColour (juce::Colours::white);
     g.setFont (15.0f);
