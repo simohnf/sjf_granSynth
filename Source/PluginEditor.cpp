@@ -208,7 +208,7 @@ void Sjf_granSynthAudioProcessorEditor::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     juce::Rectangle<int> r = getLocalBounds();
-    sjf_makeBackground< 20 >( g, r );
+    sjf_makeBackground< 40 >( g, r );
 
     g.setColour (juce::Colours::white);
     g.setFont (15.0f);
