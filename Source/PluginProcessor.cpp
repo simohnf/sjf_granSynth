@@ -163,7 +163,7 @@ juce::AudioProcessorEditor* Sjf_granSynthAudioProcessor::createEditor()
 //==============================================================================
 void Sjf_granSynthAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
-    filePathParameter.setValue(m_grainEngine.m_samplePath.getFullPathName());
+    filePathParameter.setValue( m_grainEngine.getFilePath() );
     auto state = parameters.copyState();
     std::unique_ptr<juce::XmlElement> xml (state.createXml());
     copyXmlToBinary (*xml, destData);

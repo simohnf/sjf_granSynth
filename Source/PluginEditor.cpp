@@ -288,7 +288,7 @@ void Sjf_granSynthAudioProcessorEditor::timerCallback()
     grainDeltaGraph.setGraphPosition( cloudPhase );
     grainReverbGraph.setGraphPosition( cloudPhase );
     
-    sampleNameLabel.setText(audioProcessor.m_grainEngine.m_samplePath.getFileName(), juce::dontSendNotification);
+    sampleNameLabel.setText(audioProcessor.m_grainEngine.getFileName(), juce::dontSendNotification);
     sampleNameLabel.setJustificationType(juce::Justification::centred);
     
     cloudLengthNumBox.setRange( 500.0f, fmax( 60000.0f, audioProcessor.m_grainEngine.getDurationMS() ), 1.0f );
