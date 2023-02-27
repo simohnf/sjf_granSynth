@@ -9,6 +9,14 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+#define textHeight 20
+#define graphWidth 500
+#define graphHeight 70
+#define offset 20
+#define buttonWidth 100
+#define gap ( offset / 2 )
+#define WIDTH graphWidth + buttonWidth + (gap * 3)
+#define HEIGHT (textHeight * 2) + (graphHeight * 7)
 
 //==============================================================================
 Sjf_granSynthAudioProcessorEditor::Sjf_granSynthAudioProcessorEditor (Sjf_granSynthAudioProcessor& p)
@@ -141,20 +149,22 @@ Sjf_granSynthAudioProcessorEditor::Sjf_granSynthAudioProcessorEditor (Sjf_granSy
     reverbSizeSlider.setRange(0, 1);
     reverbSizeSlider.setValue( audioProcessor.m_grainEngine.getReverbSize() );
     reverbSizeSlider.setSliderStyle( juce::Slider::Rotary );
-    addAndMakeVisible( &revSizeLabel );
-    revSizeLabel.attachToComponent( &reverbSizeSlider, false );
-    revSizeLabel.setText("size", juce::dontSendNotification);
-    revSizeLabel.setJustificationType( juce::Justification::centred );
+    reverbSizeSlider.setTextBoxStyle(juce::Slider::NoTextBox, true, 0, 0);
+//    addAndMakeVisible( &revSizeLabel );
+//    revSizeLabel.attachToComponent( &reverbSizeSlider, false );
+//    revSizeLabel.setText("size", juce::dontSendNotification);
+//    revSizeLabel.setJustificationType( juce::Justification::centred );
     reverbSizeSlider.setTooltip("This sets the room size of the reverb");
     
     addAndMakeVisible( &reverbDampingSlider );
     reverbDampingSlider.setRange(0, 1);
     reverbDampingSlider.setValue( audioProcessor.m_grainEngine.getReverbDamping() );
     reverbDampingSlider.setSliderStyle( juce::Slider::Rotary );
-    addAndMakeVisible( &revDampingLabel );
-    revDampingLabel.attachToComponent( &reverbDampingSlider, false );
-    revDampingLabel.setText("damp", juce::dontSendNotification);
-    revDampingLabel.setJustificationType( juce::Justification::centred );
+    reverbDampingSlider.setTextBoxStyle(juce::Slider::NoTextBox, true, 0, 0);
+//    addAndMakeVisible( &revDampingLabel );
+//    revDampingLabel.attachToComponent( &reverbDampingSlider, false );
+//    revDampingLabel.setText("damp", juce::dontSendNotification);
+//    revDampingLabel.setJustificationType( juce::Justification::centred );
     reverbDampingSlider.setTooltip("This sets the amount of high frequency damping applied to the reverb");
     
     addAndMakeVisible( &deltaSizeLinkToggle );
@@ -182,24 +192,36 @@ Sjf_granSynthAudioProcessorEditor::Sjf_granSynthAudioProcessorEditor (Sjf_granSy
     {
         if (tooltipsToggle.getToggleState())
         {
-            tooltipWindow.getObject().setAlpha(1.0f);
+//            tooltipWindow.getObject().setAlpha(1.0f);
+            tooltipLabel.setVisible( true );
+            setSize ( WIDTH, HEIGHT+tooltipLabel.getHeight() );
         }
         else
         {
-            tooltipWindow.getObject().setAlpha(0.0f);
+//            tooltipWindow.getObject().setAlpha(0.0f);
+            tooltipLabel.setVisible( false );
+            setSize ( WIDTH, HEIGHT );
         }
     };
-    tooltipWindow.getObject().setAlpha(0.0f);
+    tooltipsToggle.setTooltip( MAIN_TOOLTIP );
+
     
-    addAndMakeVisible(&sampleNameLabel);
+//    addAndMakeVisible(&sampleNameLabel);
+//    sampleNameLabel.setTooltip( MAIN_TOOLTIP );
     
-    startTimer(100);
+    addAndMakeVisible( &tooltipLabel );
+    tooltipLabel.setVisible( false );
+    tooltipLabel.setColour( juce::Label::backgroundColourId, otherLookandFeel.backGroundColour.withAlpha( 0.85f ) );
+    tooltipLabel.setTooltip( MAIN_TOOLTIP );
     
-    setSize (620, 500);
+    startTimer( 250 );
+    
+    setSize ( WIDTH, HEIGHT );
 }
 
 Sjf_granSynthAudioProcessorEditor::~Sjf_granSynthAudioProcessorEditor()
 {
+    stopTimer();
     setLookAndFeel( nullptr );
 }
 
@@ -207,51 +229,55 @@ Sjf_granSynthAudioProcessorEditor::~Sjf_granSynthAudioProcessorEditor()
 void Sjf_granSynthAudioProcessorEditor::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
-    juce::Rectangle<int> r = getLocalBounds();
+    juce::Rectangle<int> r = { WIDTH, HEIGHT + tooltipLabel.getHeight() };
     sjf_makeBackground< 40 >( g, r );
 
+    
     g.setColour (juce::Colours::white);
     g.setFont (15.0f);
-//    g.drawFittedText ("Hello World!", getLocalBounds(), juce::Justification::centred, 1);
     g.drawFittedText("sjf_granSynth", 0, 0, getWidth(), 20, juce::Justification::centred, 1);
-
+    g.drawFittedText( audioProcessor.m_grainEngine.getFileName(), tooltipsToggle.getWidth(), tooltipsToggle.getY(), getWidth() - tooltipsToggle.getWidth(), textHeight, juce::Justification::centred, 1);
+    g.drawFittedText("size", reverbSizeSlider.getX(), reverbSizeSlider.getY()-textHeight, reverbSizeSlider.getWidth(), textHeight, juce::Justification::centred, 1);
+    g.drawFittedText("damp", reverbDampingSlider.getX(), reverbDampingSlider.getY()-textHeight, reverbDampingSlider.getWidth(), textHeight, juce::Justification::centred, 1);
     
 }
 
 void Sjf_granSynthAudioProcessorEditor::resized()
 {
-    auto offset = 20.0f;
-    auto graphWidth =  (float)getWidth() * 0.8f;
-    auto graphHeight = ( (float)getHeight() -40.0f ) / 7.0f ;
-    auto buttonWidth = 0.8f * (getWidth() - graphWidth);
+//    auto offset = 20.0f;
+//    auto graphWidth =  (float)getWidth() * 0.8f;
+//    auto graphHeight = ( (float)getHeight() -40.0f ) / 7.0f ;
+//    auto buttonWidth = 0.8f * (getWidth() - graphWidth);
     auto buttonHeight = offset;
-    auto gap = 0.1f * (getWidth() - graphWidth);
-    loadSampleButton.setBounds( gap+graphWidth, 20, buttonWidth, buttonHeight);
-    randomGraphsButton.setBounds( gap+graphWidth, buttonHeight*3, buttonWidth, buttonHeight);
-    triggerRandomCloudButton.setBounds( gap+graphWidth, buttonHeight*4, buttonWidth, buttonHeight*4);
-    triggerCloudButton.setBounds( gap+graphWidth, buttonHeight*9, buttonWidth, buttonHeight*4);
-    envTypeBox.setBounds( gap+graphWidth, buttonHeight*13, buttonWidth, buttonHeight);
-    cloudLengthNumBox.setBounds( gap+graphWidth, buttonHeight*14, buttonWidth, buttonHeight);
-    deltaSizeLinkToggle.setBounds(gap+graphWidth, buttonHeight*16, buttonWidth, buttonHeight*3);
-    
-    
-    grainDeltaGraph.setBounds(0, offset, graphWidth, graphHeight);
-    grainPositionGraph.setBounds(0, offset + graphHeight, graphWidth, graphHeight);
-    grainPanGraph.setBounds(0, offset + graphHeight*2, graphWidth, graphHeight);
-    grainTransposeGraph.setBounds(0,offset +  graphHeight*3, graphWidth, graphHeight);
-    grainSizeGraph.setBounds(0, offset + graphHeight*4, graphWidth, graphHeight);
-    grainGainGraph.setBounds(0, offset + graphHeight*5, graphWidth, graphHeight);
-    grainReverbGraph.setBounds(0, offset +graphHeight*6, graphWidth, graphHeight);
-    
-    reverbSizeSlider.setBounds(grainReverbGraph.getX() + graphWidth, grainReverbGraph.getY(), (getWidth() - graphWidth) * 0.5f, graphHeight);
-    reverbSizeSlider.setTextBoxStyle (juce::Slider::TextBoxBelow, false, reverbSizeSlider.getWidth(), buttonHeight);
-    reverbDampingSlider.setBounds(reverbSizeSlider.getX() + reverbSizeSlider.getWidth(), reverbSizeSlider.getY(), reverbSizeSlider.getWidth(), graphHeight);
-    reverbDampingSlider.setTextBoxStyle (juce::Slider::TextBoxBelow, false, reverbDampingSlider.getWidth(), buttonHeight);
-    
+//    auto gap = 0.1f * (getWidth() - graphWidth);
 
-    tooltipsToggle.setBounds(0, getHeight() - offset, graphWidth * 0.15f, buttonHeight);
     
-    sampleNameLabel.setBounds(tooltipsToggle.getWidth(), tooltipsToggle.getY(), getWidth() - tooltipsToggle.getWidth(), buttonHeight);
+    
+    grainDeltaGraph.setBounds(gap, offset, graphWidth, graphHeight);
+    grainPositionGraph.setBounds(gap, grainDeltaGraph.getBottom(), graphWidth, graphHeight);
+    grainPanGraph.setBounds(gap, grainPositionGraph.getBottom(), graphWidth, graphHeight);
+    grainTransposeGraph.setBounds(gap,grainPanGraph.getBottom(), graphWidth, graphHeight);
+    grainSizeGraph.setBounds(gap, grainTransposeGraph.getBottom(), graphWidth, graphHeight);
+    grainGainGraph.setBounds(gap, grainSizeGraph.getBottom(), graphWidth, graphHeight);
+    grainReverbGraph.setBounds(gap, grainGainGraph.getBottom(), graphWidth, graphHeight);
+    
+    loadSampleButton.setBounds( gap+graphWidth +gap, offset, buttonWidth, buttonHeight);
+    randomGraphsButton.setBounds( loadSampleButton.getX(), buttonHeight*3, buttonWidth, buttonHeight);
+    triggerRandomCloudButton.setBounds( loadSampleButton.getX(), buttonHeight*4, buttonWidth, buttonHeight*4);
+    triggerCloudButton.setBounds( loadSampleButton.getX(), buttonHeight*9, buttonWidth, buttonHeight*4);
+    envTypeBox.setBounds( loadSampleButton.getX(), buttonHeight*13, buttonWidth, buttonHeight);
+    cloudLengthNumBox.setBounds( loadSampleButton.getX(), buttonHeight*14, buttonWidth, buttonHeight);
+    deltaSizeLinkToggle.setBounds( loadSampleButton.getX(), buttonHeight*16, buttonWidth, buttonHeight*3);
+    
+    reverbSizeSlider.setBounds(grainReverbGraph.getRight(), grainReverbGraph.getY(), (getWidth() - graphWidth - offset) * 0.5f, graphHeight);
+//    reverbSizeSlider.setTextBoxStyle (juce::Slider::NoTextBox, false, reverbSizeSlider.getWidth(), buttonHeight);
+    reverbDampingSlider.setBounds(reverbSizeSlider.getX() + reverbSizeSlider.getWidth(), reverbSizeSlider.getY(), reverbSizeSlider.getWidth(), graphHeight);
+//    reverbDampingSlider.setTextBoxStyle (juce::Slider::NoTextBox, false, reverbDampingSlider.getWidth(), textHeight);
+    
+    tooltipsToggle.setBounds( grainReverbGraph.getX(), grainReverbGraph.getBottom(), graphWidth * 0.15f, textHeight );
+    
+//    sampleNameLabel.setBounds( tooltipsToggle.getWidth(), tooltipsToggle.getY(), getWidth() - tooltipsToggle.getWidth(), textHeight );
+    tooltipLabel.setBounds( 0, HEIGHT, getWidth(), textHeight*6 );
 }
 
 void Sjf_granSynthAudioProcessorEditor::randomiseGraphs()
@@ -288,10 +314,12 @@ void Sjf_granSynthAudioProcessorEditor::timerCallback()
     grainDeltaGraph.setGraphPosition( cloudPhase );
     grainReverbGraph.setGraphPosition( cloudPhase );
     
-    sampleNameLabel.setText(audioProcessor.m_grainEngine.getFileName(), juce::dontSendNotification);
-    sampleNameLabel.setJustificationType(juce::Justification::centred);
+//    sampleNameLabel.setText(audioProcessor.m_grainEngine.getFileName(), juce::dontSendNotification);
+//    sampleNameLabel.setJustificationType(juce::Justification::centred);
     
     cloudLengthNumBox.setRange( 500.0f, fmax( 60000.0f, audioProcessor.m_grainEngine.getDurationMS() ), 1.0f );
+    
+    sjf_setTooltipLabel( this, MAIN_TOOLTIP, tooltipLabel );
 }
 
 void Sjf_granSynthAudioProcessorEditor::triggerNewCloud()

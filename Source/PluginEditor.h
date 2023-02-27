@@ -37,7 +37,7 @@ private:
     juce::ComboBox envTypeBox;
     sjf_numBox cloudLengthNumBox;
     sjf_grapher grainPositionGraph, grainPanGraph, grainTransposeGraph, grainSizeGraph, grainGainGraph, grainDeltaGraph, grainReverbGraph;
-    juce::Label revSizeLabel, revDampingLabel, sampleNameLabel;
+    juce::Label /*revSizeLabel, revDampingLabel, sampleNameLabel,*/ tooltipLabel;
     juce::Slider reverbSizeSlider, reverbDampingSlider;
     Sjf_granSynthAudioProcessor& audioProcessor;
     juce::ToggleButton deltaSizeLinkToggle, tooltipsToggle;
@@ -49,7 +49,9 @@ private:
     
     sjf_lookAndFeel otherLookandFeel;
     
+    juce::String MAIN_TOOLTIP = "sjf_granSynth: \nGranular Cloud Generator\n\n1) load a sample \n2) click random cloud (you may have to start transport to get sound at first \n3) you can also try setting the parameters manually and then clicking trigger cloud"; 
+    
 //    juce::TooltipWindow tooltipWindow {this, 700};
-    juce::SharedResourcePointer<juce::TooltipWindow> tooltipWindow;
+//    juce::SharedResourcePointer<juce::TooltipWindow> tooltipWindow;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Sjf_granSynthAudioProcessorEditor)
 };
