@@ -269,9 +269,9 @@ void Sjf_granSynthAudioProcessorEditor::resized()
     cloudLengthNumBox.setBounds( loadSampleButton.getX(), buttonHeight*14, buttonWidth, buttonHeight);
     deltaSizeLinkToggle.setBounds( loadSampleButton.getX(), buttonHeight*16, buttonWidth, buttonHeight*3);
     
-    reverbSizeSlider.setBounds(grainReverbGraph.getRight(), grainReverbGraph.getY(), (getWidth() - graphWidth - offset) * 0.5f, graphHeight);
+    reverbSizeSlider.setBounds(grainReverbGraph.getRight(), grainReverbGraph.getY()+textHeight, (getWidth() - graphWidth - offset) * 0.5f, graphHeight-textHeight);
 //    reverbSizeSlider.setTextBoxStyle (juce::Slider::NoTextBox, false, reverbSizeSlider.getWidth(), buttonHeight);
-    reverbDampingSlider.setBounds(reverbSizeSlider.getX() + reverbSizeSlider.getWidth(), reverbSizeSlider.getY(), reverbSizeSlider.getWidth(), graphHeight);
+    reverbDampingSlider.setBounds(reverbSizeSlider.getX() + reverbSizeSlider.getWidth(), reverbSizeSlider.getY(), reverbSizeSlider.getWidth(), reverbSizeSlider.getHeight() );
 //    reverbDampingSlider.setTextBoxStyle (juce::Slider::NoTextBox, false, reverbDampingSlider.getWidth(), textHeight);
     
     tooltipsToggle.setBounds( grainReverbGraph.getX(), grainReverbGraph.getBottom(), graphWidth * 0.15f, textHeight );
