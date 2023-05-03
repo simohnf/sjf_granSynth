@@ -229,9 +229,12 @@ Sjf_granSynthAudioProcessorEditor::~Sjf_granSynthAudioProcessorEditor()
 void Sjf_granSynthAudioProcessorEditor::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
-    juce::Rectangle<int> r = { WIDTH, HEIGHT + tooltipLabel.getHeight() };
+#ifdef JUCE_DEBUG
+    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
+#else
+    juce::Rectangle<int> r = { (int)( WIDTH ), (int)(HEIGHT + tooltipLabel.getHeight()) };
     sjf_makeBackground< 40 >( g, r );
-
+#endif
     
     g.setColour (juce::Colours::white);
     g.setFont (15.0f);
