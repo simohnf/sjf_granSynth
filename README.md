@@ -4,6 +4,17 @@
 
 This plug-in is a granular synthesiser designed to create asynchronous "clouds" and textures from audio samples.
 
-NOTE: This requires functions and classes contained in [sjf_audio](https://github.com/simohnf/sjf_audio)
-
 [More info, audio samples, and installer](https://simohnf.github.io./plug-ins/sjf_granSynth/)
+
+------------------------------
+# To download source:
+
+In terminal 
+```
+git clone https://github.com/simohnf/sjf_granSynth
+
+cd sjf_granSynth
+
+git submodule update --init --recursive
+```
+---------------
